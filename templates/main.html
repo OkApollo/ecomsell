@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title%}Home{% endblock %}
+
+
+{% block content %}
+
+<div class="welcome">
+    <!-- <div class="main">
+        <h1>Hello User</h1>
+        <h3>What would you like to purchase today?</h3>
+    </div> -->
+    
+    {% include 'carosuel.html' %}
+    <section class="SectionA">
+    <div class="CardsA">
+        <h2>Recommended Utilities to buy</h2>
+    </div>
+
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-3">
+                <a href="#">
+                {% include 'card.html' %}
+            </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#">
+                {% include 'card.html' %}
+            </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#">
+                {% include 'card.html' %}
+            </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#">
+                {% include 'card.html' %}
+            </a>
+            </div>
+        </div>
+    </div>
+    </section>
+    <section class="SectionB">
+        <div class="CardsB">
+            <h2>Electronics to shop and buy</h2>
+        </div>
+    
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="#">
+                    {% include 'card.html' %}
+                </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="#">
+                    {% include 'card.html' %}
+                </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="#">
+                    {% include 'card.html' %}
+                </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="#">
+                    {% include 'card.html' %}
+                </a>
+                </div>
+            </div>
+        </div>
+        </section>
+    <p>{{user}}</p>
+    <p>{{passcode}}</p>
+</div>
+
+{% endblock %}

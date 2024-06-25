@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="singlepage">
+<div class="container">
+    <div class="row">
+        <h2 class="mt-4 mb-3">Random Title</h2>
+        <div class="col-md-6">
+            <img src="{{ url_for('uploaded_file', filename='random.webp') }}" alt="Uploaded image">
+        </div>
+        <div class="col-md-6">
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet molestias est mollitia quaerat maxime?
+                Obcaecati voluptate, tempore cumque facere aut minus modi? Eaque maxime in adipisci cum possimus id
+                aperiam nihil sequi, assumenda quisquam recusandae nam tempora facilis, perspiciatis numquam quod
+                consectetur necessitatibus iure fuga iusto? Consequatur facere, unde in ratione, quam ad voluptatum,
+                natus labore perferendis quisquam optio incidunt magni! Praesentium, reiciendis? Molestiae deserunt
+                voluptatum consequuntur non fuga repudiandae omnis voluptates asperiores nemo excepturi tenetur, soluta
+                incidunt praesentium nobis pariatur quis temporibus similique dolorem obcaecati provident esse
+                aspernatur? Aspernatur, tenetur. Quaerat suscipit provident iste eligendi illo sit illum delectus
+                accusamus ab temporibus? Iste ullam adipisci deserunt, itaque dolores ipsam voluptates placeat illum
+                omnis aut nam veniam magnam odio voluptatibus eius. Corrupti maiores sit fugiat dolore, architecto
+                consequatur accusantium unde aperiam velit expedita quas, odio a, id blanditiis sint fuga? Alias qui
+                minima nulla animi cumque et numquam possimus harum vero dolores aut iste expedita quibusdam porro
+                officiis earum aperiam quas molestiae, impedit a quae quam quod nemo. Molestias cupiditate eum quidem
+                nostrum distinctio optio praesentium rerum mollitia ad libero tempore aut doloremque consectetur sint
+                saepe et deleniti eligendi, culpa neque sed exercitationem officiis porro iusto. Saepe laboriosam vero
+                eaque.</p>
+            <div class="spicons">
+                <i class="fa-solid fa-cart-plus btn btn-primary"> Add to Cart</i>
+                <i class="fa-solid fa-heart btn btn-primary"></i>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+</div>
+</div>
+
+{% endblock %}

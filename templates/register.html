@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="reg">
+        <h1>Sign up</h1>
+        <form action="{{url_for('register')}}" method="POST">
+
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{form.username.label(class="form-control-label")}}
+                {{form.username(class="form-control")}}
+            </div>
+            <div class="form-group">
+                {{form.email.label(class="form-control-label")}}
+                {{form.email(class="form-control")}}
+            </div>
+
+            <div class="form-group">
+                {{form.password.label(class="form-control-label")}}
+                {{form.password(class="form-control")}}
+            </div>
+
+            <div class="form-group">
+                {{form.confirmpass.label(class="form-control-label")}}
+                {{form.confirmpass(class="form-control")}}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+            {% if form.confirmpass.errors %}
+            <div class="alert alert-danger">
+                {% for error in form.confirmpass.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+
+            {% with message = get_flashed_messages(with_categories=true) %}
+            {% if message %}
+            {% for c,m in message %}
+            <div class="alert alert-{{c}}">
+                {{m}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
