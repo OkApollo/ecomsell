@@ -14,6 +14,9 @@ class userModel(UserMixin):
         self.password_hash = password_hash
         self._id = _id
 
+    def get_id(self):
+        return str(self._id)
+
     @staticmethod
     def get(user_id):
         user_data = users_collection.find_one({"_id": ObjectId(user_id)})
@@ -58,6 +61,3 @@ class userModel(UserMixin):
         new_user = userModel(username, email, password_hash)
         new_user.save_to_db()
         return new_user
-
-    def __str__():
-        return "This is the registration model class"

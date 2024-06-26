@@ -54,3 +54,9 @@
 #         saved = collection.insert_one(data)
 #         return redirect(url_for('login'))
 #     return render_template('register.html', form=form)
+
+from random import 
+
+print(callmemaybe())
+
+
