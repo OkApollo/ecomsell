@@ -3,14 +3,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash, sen
 from pymongo import MongoClient 
 # from wtforms import StringField, PasswordField, SubmitField
 # from wtforms.validators import DataRequired, Email, EqualTo
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import random
 # Flask-PyMongo
-
+from werkzeug.security import check_password_hash
 from flask_pymongo import PyMongo
-from forms import Registration, Login
+from forms import Registration, LoginForm
 from models import userModel as User
-
 from flask_caching import Cache
 
 # from flask_assets import Bundle, Environment
@@ -25,10 +24,12 @@ collection = db.my_collection
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = str(random.randint(1000000000, 9999999999))
-# app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MONGO_URI'] = client
+app.config['SESSION_TYPE'] = 'filesystem'
 
 login_mng = LoginManager(app)
+login_mng.init_app(app)
 login_mng.login_view = 'login'
 
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
@@ -51,21 +52,26 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    form = Login()
+    form = LoginForm()
     if form.validate_on_submit():
         user = User.find_by_email(form.email.data)
-        if user and user.check_password(form.password.data):
-            login_user(user)
+        passchecker = User.check_password(user.password, form.password.data)
+        if user and passchecker:
+            user = User()
+            login_user(user._id)
             flash("Login Successful", "success")
-        flash("Invalid creds!", "danger")
-    return render_template("logsite.html", form= form)
-    
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid credentials!", "danger")
+    return render_template("logsite.html", form=form)
 
 
-@login_required
+
 @app.route("/sp")
+@login_required
 def sp():
-    return render_template("singleproduct.html")
+    form = LoginForm()
+    return render_template("singleproduct.html", form=form)
 
 
 @app.route("/register", methods=["GET", "POST"])

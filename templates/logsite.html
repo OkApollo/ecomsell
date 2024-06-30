@@ -1,37 +1,23 @@
-{% extends 'base.html' %}
-{% block title %}Log in{% endblock %}
-
-{% block Login %}
-
-<div class="login">
-    <h2>Log in</h2>
-    <div class="container">
-    <div class="row justify-content-md-center"></div>
-    <form action="{{url_for('login')}}" method="POST">
-            {{form.hidden_tag()}}
-            <div class="email">
-                {{form.email.label}}<br>
-                {{form.email(size=50)}}<br>
-                {{form.email.errors}}
-
-            </div>
-
-            <div class="password">
-                {{form.password.label}}<br>
-                {{form.password(size=50)}}<br>
-                {{form.password.errors}}
-
-            </div>
-
-            <div class="submit">
-                {{form.submit()}}
-            </div>
-            
-
-
-    </form>
-</div>
-</div>
-</div>
-
+<!-- login.html -->
+{% extends "base.html" %}
+{% block content %}
+  <h2>Login</h2>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show">{{ message }}</div>
+      {% endfor %} 
+    {% endif %}
+  {% endwith %}
+  <form method="POST" action="{{ url_for('login') }}">
+    <div class="form-group">
+      {{ form.email.label }}
+      {{ form.email(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.password.label }}
+      {{ form.password(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
 {% endblock %}
