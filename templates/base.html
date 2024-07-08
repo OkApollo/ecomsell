@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='cardz.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='regiester.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='sp.css') }}">
+        <link rel="stylesheet" href="{{url_for('static', filename='usersettings.css')}}">
 
 </head>
 <body>
@@ -32,4 +33,6 @@
 
     {% include 'footer.html' %}
 </body>
+
+<script src="{{url_for('static',filename='usersetting.js')}}" ></script>
 </html>

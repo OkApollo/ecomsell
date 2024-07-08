@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+/* @import works in one file for css */
+
+#userdetails_content{
+    display:none;
+}
+
+#purchases_content{
+    display:none;
+}
+
+#editdet_content{
+    display:none;
+}
+
+#notifs_content{
+    display:none;
+}
+
+#address_content{
+    display:none;
+}
+
+.profilepicture{
+    border-radius: 50%;
+}
+
+.profile_section:hover .profilepicture{
+    opacity: 50%;
+}
+
+.profile_section {
+    display: flex;
+    position: relative;
+    width: fit-content;
+}
+
+.pencilicon {
+    position: absolute;
+    top: 33%;
+    left: 37.25%;
+    font-size: 40px;
+}
+
+.pencilicon{
+    opacity: 0;
+}
+
+.profile_section:hover .pencilicon{
+    opacity: 1;
+    color:green;
+    cursor: pointer;
+}
+
+#userdetails_content h4{
+    font-family:"Open Sans", sans-serif;
+}

@@ -1,6 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
+from pymongo import MongoClient
+
+client = MongoClient("mongodb+srv://fortnitevideocreator:qZVNHnFkg7CjCvH2@cluster0.rzvnawx.mongodb.net/my_database?retryWrites=true&w=majority")
 
 class Registration(FlaskForm):
     username = StringField('Userform', validators=[DataRequired()])
@@ -13,7 +16,13 @@ class Registration(FlaskForm):
 
 # Create it here
 class LoginForm(FlaskForm):
-    username = StringField("Userform", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("password", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+class AddressAdder(FlaskForm):
+    country = StringField("country", validators=[DataRequired()])
+    state = StringField("state", validators=[DataRequired()])
+    zipcode = StringField("zipcode", validators=[DataRequired()])
+    note = StringField("note", validators=[DataRequired()])
     submit = SubmitField("Submit")
