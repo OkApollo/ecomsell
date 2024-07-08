@@ -55,6 +55,11 @@ class userModel(UserMixin):
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password_hash)
 
+    # def update_name(self,name):
+    #     user_data = users_collection.find_one({"_id": ObjectId(self._id)})
+    #     users_collection.update_one({"_id": ObjectId(self._id)},{"$username": name}, {"$set": user_data})
+
+
     @staticmethod
     def create_user(username, email, password):
         password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())

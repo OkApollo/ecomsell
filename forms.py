@@ -26,3 +26,6 @@ class AddressAdder(FlaskForm):
     zipcode = StringField("zipcode", validators=[DataRequired()])
     note = StringField("note", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+# class Changeprofile(FlaskForm):
+#     username = StringField("Username", validators =)

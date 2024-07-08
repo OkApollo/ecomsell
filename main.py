@@ -6,12 +6,14 @@ from pymongo import MongoClient
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import random
 # Flask-PyMongo
+import os
 from werkzeug.security import check_password_hash
 from flask_pymongo import PyMongo
 from forms import Registration, LoginForm, AddressAdder
 from models import userModel as User
 from models import addressModel as address
 from flask_caching import Cache
+from flask import session, g
 
 # from flask_assets import Bundle, Environment
 
@@ -53,6 +55,7 @@ def home():
     return render_template("main.html")
 
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -65,8 +68,10 @@ def login():
                 print(f"The form:{user._id}")
                 # user = User()
                 login_user(user)
-                flash("Login Successful", "success")
-                return redirect(url_for("home"))
+                session['user_id'] = user._id # stroing the ID in session.
+                if not current_user:
+                    flash("Login Successful", "success")
+                return redirect(url_for("usersettings"))
             else:
                 flash("Invalid credentials!", "danger")
         return render_template("logsite.html", form=form)
@@ -78,7 +83,6 @@ def login():
 @login_required
 def sp():
     return render_template("singleproduct.html")
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -98,8 +102,13 @@ def register():
 
 @app.route('/logout')
 def logout():
-    logout_user()
-    flash("You have logged out")
+    user_id = session.get('user_id')
+    if user_id is not None:
+        logout_user()
+        session.pop('user_id', None)
+        flash("You have logged out")
+    else:
+        g.user = None
     return redirect(url_for('login'))
 
 # user settings
@@ -110,13 +119,19 @@ def logout():
 def usersettings():
     user = current_user
     addresses = address.find_by_user(user._id)
-    form = AddressAdder()
-    return render_template("usersetting.html", user=user, address=addresses, form = form)
+    # form = AddressAdder()
+    # form12 = Registration()
+    print(user._id)
+    return render_template("usersetting.html", user = user)
 
 # @app.route('/address/get')
 # @login_required
 # def address_get():
 #     addresses = address.find_by_user(_id=current_user._id)
+
+@app.route('/addpfp/<filename>', methods=["GET","POST"])
+def addpfp(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route('/address/add', methods = ['GET', 'POST'])
@@ -135,8 +150,11 @@ def address_add():
 @app.route('/address/edit/<unique_address_id>', methods = ['GET', 'POST'])
 @login_required
 def address_edit(unique_address_id):
+    #id is given correctly
+    # another problem - 
+    # The selected edit address is giving the first items instead of the items selected to change
     addresses = address.get_from_id(unique_address_id)
-    form12 = AddressAdder(addresses)
+    form12 = AddressAdder(obj=addresses)
     if not form12.validate_on_submit():
         addresses.country = form12.country.data
         addresses.city = form12.state.data
@@ -144,17 +162,39 @@ def address_edit(unique_address_id):
         addresses.notes = form12.note.data
         addresses.save_to_db()
         return redirect(url_for('usersettings'))
-    return redirect(url_for('usersettiings'))
+    return redirect(url_for('usersettings'))
 
 
 
-@app.route('/address/delete/<unique_address_id>', methods = ['GET', 'POST'])
+@app.route('/address/delete/<unique_address_id>', methods = ['GET'])
 @login_required
 def address_del(unique_address_id):
-    form12 = AddressAdder()
-    addresses = address()
-    addresses.delete_from_db(_id=current_user._id)
+    addresses = address.get_from_id(unique_address_id)
+    if addresses:
+        addresses.delete_from_db()
+    return redirect(url_for('usersettings'))
 
 
+
+@app.route("/addressprofile", methods= ["POST","GET"])
+@login_required
+def addressprofile():
+    user = current_user
+    address_form = AddressAdder()
+    addresses = address.find_by_user(u_id=user._id)
+    return render_template("address_content.html",user=user, form = address_form, address = addresses)
+
+
+
+@app.route("/userprofile", methods = ["POST", "GET"])
+@login_required
+def userprofile():
+    form12 = Registration(obj=current_user)
+    user = current_user
+    print("USER", user)
+    if not form12.validate_on_submit():
+        print("validated")
+    return render_template("userprofile.html", edit_profile_form = form12, user=user)
+    
 if __name__ == "__main__":
     app.run(debug=True)

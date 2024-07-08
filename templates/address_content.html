@@ -1,0 +1,98 @@
+{% extends 'usersetting.html '%}
+
+{% block addresses %}
+
+<div id="address_content">
+    <h3>Addresses</h3>
+    <hr>
+    <br>
+    <ul>
+        {% for i in address %}
+        <li>
+            <h4>{{i.country}} {{i.city}} {{i.zipcode}}
+                <a data-bs-toggle="modal" data-bs-target="#edit_address"><i
+                        class="fa-solid fa-pencil"></i></a>
+                <a href="{{ url_for('address_del', unique_address_id=i._id) }}"><i
+                        class="fa-solid fa-trash-can"></i></a>
+            </h4>
+        </li>
+        <div class="modal fade" id="edit_address" tabindex="-1" aria-labelledby="edit_address"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit_address_title">Edit an Address<address></address>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{{ url_for('address_edit', unique_address_id=i._id) }}">
+                            <div class="form-group">
+                                {{form.country.label}}
+                                {{form.country(class="form-control", value=i.country)}}
+                            </div>
+                            <div class="form-group">
+                                {{form.state.label}}
+                                {{form.state(class="form-control", value=i.city)}}
+                            </div>
+                            <div class="form-group">
+                                {{form.zipcode.label}}
+                                {{form.zipcode(class="form-control", value= i.zipcode)}}
+                            </div>
+                            <div class="form-group">
+                                {{form.note.label}}
+                                {{form.note(class="form-control", value= i.notes)}}
+                            </div>
+
+                            {{ form.submit(class="btn btn-primary") }}
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </ul>
+    <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#add_address">Add an
+        Address</button>
+    <div class="modal fade" id="add_address" tabindex="-1" aria-labelledby="add_address"
+        aria-hidden=" true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="add_address_title">Add an <address></address>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/address/add">
+                        <div class="form-group">
+                            {{form.country.label}}
+                            {{form.country(class="form-control")}}
+                        </div>
+                        <div class="form-group">
+                            {{form.state.label}}
+                            {{form.state(class="form-control")}}
+                        </div>
+                        <div class="form-group">
+                            {{form.zipcode.label}}
+                            {{form.zipcode(class="form-control")}}
+                        </div>
+                        <div class="form-group">
+                            {{form.note.label}}
+                            {{form.note(class="form-control")}}
+                        </div>
+
+                        {{ form.submit(class="btn btn-primary") }}
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
