@@ -68,7 +68,7 @@ def login():
                 print(f"The form:{user._id}")
                 # user = User()
                 login_user(user)
-                session['user_id'] = user._id # stroing the ID in session.
+                # session['user_id'] = user._id # stroing the ID in session.
                 if not current_user:
                     flash("Login Successful", "success")
                 return redirect(url_for("usersettings"))
@@ -190,11 +190,27 @@ def addressprofile():
 @login_required
 def userprofile():
     form12 = Registration(obj=current_user)
-    user = current_user
-    print("USER", user)
+    user = User(username = current_user.username, email= current_user.email, password_hash=current_user.password_hash, _id = current_user._id)
     if not form12.validate_on_submit():
+        user.username = form12.username.data
+        user.save_to_db()
         print("validated")
-    return render_template("userprofile.html", edit_profile_form = form12, user=user)
+    return render_template("userprofile.html", edit_profile_form = form12, user=current_user)
+
+
+# @app.route("/userprofile", methods = ["POST", "GET"])
+# @login_required
+# def userprofile():
+#     form12 = Registration(obj=current_user)
+#     if not form12.validate_on_submit():
+#         current_user.username = form12.username.data
+#         current_user.save_to_db()
+#         print("saved")
+#     return render_template("userprofile.html", edit_profile_form = form12, user=current_user)
     
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
