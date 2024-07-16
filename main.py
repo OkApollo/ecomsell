@@ -3,11 +3,13 @@ from flask_session import Session
 from pymongo import MongoClient
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 import random
+import os
 from werkzeug.security import check_password_hash
 from forms import Registration, LoginForm, AddressAdder
 from models import userModel as User
 from models import addressModel as address
 from flask_caching import Cache
+from werkzeug.utils import secure_filename
 
 # from flask_assets import Bundle, Environment
 
@@ -25,6 +27,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_KEY_PREFIX'] = 'flask:'
+
+if not os.path.exists(app.config["UPLOAD_FOLDER"]):
+    os.makedirs(app.config["UPLOAD_FOLDER"])
 
 Session(app)
 
@@ -50,13 +55,15 @@ def load_user(user_id):
 def home():
     return render_template("main.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if request.method == "POST":
         if not form.validate_on_submit():
             user = User.find_by_email(form.email.data)
-            passchecker = User.check_password(user, password=form.password.data)
+            passchecker = User.check_password(
+                user, password=form.password.data)
             if user and passchecker:
                 login_user(user)
                 Session['email'] = form.email.data
@@ -76,17 +83,25 @@ def sp():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = Registration()
-    if form.validate_on_submit():
-        existing_user = User.find_by_email(form.email.data)
-        if existing_user is None:
-            user = User.create_user(
-                form.username.data, form.email.data, form.password.data)
-            flash("Registration is successful", "success")
-            login_user(user)
-            session['email'] = form.email.data
-            return redirect(url_for('home'))
-        flash("Email already registered", "warning")
-    return render_template('register.html', form=form)
+    if request.method == 'POST':
+        print(request.files['profile_picture'])
+        if not form.validate_on_submit():
+            file = request.files['profile_picture']
+            filename = secure_filename(file.filename)
+            existing_user = User.find_by_email(form.email.data)
+            if existing_user is None:
+                user = User.create_user(
+                    form.username.data, form.email.data, form.password.data)
+                file.save(os.path.join(
+                    app.config['UPLOAD_FOLDER'], f'{user._id}.png'))
+                flash("Registration is successful", "success")
+                login_user(user)
+                session['email'] = form.email.data
+                return redirect(url_for('home'))
+            flash("Email already registered", "warning")
+            return render_template('register.html', form=form)
+    else:
+        return render_template('register.html', form=form)
 
 
 @app.route('/logout')
@@ -95,6 +110,11 @@ def logout():
     session.pop('email', None)
     flash("You have logged out", "success")
     return redirect(url_for('login'))
+
+# @app.route('/admin')
+# def admin():
+#     user = User()
+#     if user.userrole == 1:
 
 
 @app.route('/userset', methods=["GET", "POST"])
@@ -107,7 +127,7 @@ def usersettings():
 
 @app.route('/addpfp/<filename>', methods=["GET", "POST"])
 def addpfp(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return os.send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route('/address/add', methods=['GET', 'POST'])
@@ -116,7 +136,8 @@ def address_add():
     form12 = AddressAdder()
     if request.method == "POST":
         if form12.validate_on_submit():
-            address.create_address(current_user._id, form12.country.data, form12.state.data, form12.zipcode.data, form12.note.data)
+            address.create_address(current_user._id, form12.country.data,
+                                   form12.state.data, form12.zipcode.data, form12.note.data)
             flash("Address added successfully", "success")
             return redirect(url_for("usersettings"))
     return render_template("singleproduct.html")

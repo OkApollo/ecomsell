@@ -1,11 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
+from flask_wtf.file import FileField
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 from pymongo import MongoClient
 
 client = MongoClient("mongodb+srv://fortnitevideocreator:qZVNHnFkg7CjCvH2@cluster0.rzvnawx.mongodb.net/my_database?retryWrites=true&w=majority")
 
 class Registration(FlaskForm):
+    profile_picture = FileField('Profile picture', validators=[DataRequired()])
     username = StringField('Userform', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])

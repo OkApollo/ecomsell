@@ -8,10 +8,11 @@ db = client.my_database
 users_collection = db.new_collection
 
 class userModel(UserMixin):
-    def __init__(self, username, email, password_hash, _id=None):
+    def __init__(self, username, email, password_hash, userrole=2 ,_id=None):
         self.username = username
         self.email = email
         self.password_hash = password_hash
+        self.userrole = userrole
         self._id = _id
 
     def get_id(self):
