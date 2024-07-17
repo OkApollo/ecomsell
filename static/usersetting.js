@@ -4,7 +4,7 @@ var editdet = document.getElementById("editdet")
 var address_saved = document.getElementById("addresses")
 var notifs = document.getElementById("notifs")
 
-document.getElementById("userdetails_content").style.display = "block";
+// document.getElementById("userdetails_content").style.display = "block";
 
 userdet.addEventListener("click",()=>{
     // console.log("WORKED")

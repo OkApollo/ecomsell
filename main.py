@@ -66,7 +66,7 @@ def login():
                 user, password=form.password.data)
             if user and passchecker:
                 login_user(user)
-                Session['email'] = form.email.data
+                session['email'] = form.email.data
                 flash("Login Successful", "success")
                 return redirect(url_for("usersettings"))
             else:
@@ -80,28 +80,27 @@ def sp():
     return render_template("singleproduct.html")
 
 
+#it's being stored but loading in late
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = Registration()
     if request.method == 'POST':
         print(request.files['profile_picture'])
-        if not form.validate_on_submit():
-            file = request.files['profile_picture']
-            filename = secure_filename(file.filename)
-            existing_user = User.find_by_email(form.email.data)
-            if existing_user is None:
-                user = User.create_user(
-                    form.username.data, form.email.data, form.password.data)
-                file.save(os.path.join(
-                    app.config['UPLOAD_FOLDER'], f'{user._id}.png'))
-                flash("Registration is successful", "success")
-                login_user(user)
-                session['email'] = form.email.data
-                return redirect(url_for('home'))
-            flash("Email already registered", "warning")
-            return render_template('register.html', form=form)
-    else:
+        file = request.files['profile_picture']
+        filename = secure_filename(file.filename)
+        existing_user = User.find_by_email(form.email.data)
+        if existing_user is None:
+            user = User.create_user(
+                form.username.data, form.email.data, form.password.data)
+            file.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], f'{user._id}.png'))
+            flash("Registration is successful", "success")
+            login_user(user)
+            session['email'] = form.email.data
+            return redirect(url_for('home'))
+        flash("Email already registered", "warning")
         return render_template('register.html', form=form)
+    return render_template('register.html', form=form)
 
 
 @app.route('/logout')
@@ -135,7 +134,7 @@ def addpfp(filename):
 def address_add():
     form12 = AddressAdder()
     if request.method == "POST":
-        if form12.validate_on_submit():
+        if not form12.validate_on_submit():
             address.create_address(current_user._id, form12.country.data,
                                    form12.state.data, form12.zipcode.data, form12.note.data)
             flash("Address added successfully", "success")
@@ -148,7 +147,7 @@ def address_add():
 def address_edit(unique_address_id):
     addresses = address.get_from_id(unique_address_id)
     form12 = AddressAdder(obj=addresses)
-    if form12.validate_on_submit():
+    if not form12.validate_on_submit():
         addresses.country = form12.country.data
         addresses.city = form12.state.data
         addresses.zipcode = form12.zipcode.data
@@ -180,12 +179,12 @@ def addressprofile():
 @login_required
 def userprofile():
     form12 = Registration(obj=current_user)
-    if form12.validate_on_submit():
+    if request.method == 'POST':
         current_user.username = form12.username.data
         current_user.save_to_db()
-        session['user_data']['username'] = current_user.username
+        # session['user_data']['username'] = current_user.username
         flash("Profile updated successfully", "success")
-        return redirect(url_for("usersettings"))
+        return render_template("userprofile.html", edit_profile_form=form12, user=current_user)
     return render_template("userprofile.html", edit_profile_form=form12, user=current_user)
 
 
