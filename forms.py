@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from flask_wtf.file import FileField
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 from pymongo import MongoClient
@@ -29,5 +29,7 @@ class AddressAdder(FlaskForm):
     note = StringField("note", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
-# class Changeprofile(FlaskForm):
-#     username = StringField("Username", validators =)
+class ProductAdder(FlaskForm):
+    productname = StringField("Product Name", validators=[DataRequired()])
+    price = IntegerField("Price", validators=[DataRequired()])
+    submit = SubmitField("Submit")

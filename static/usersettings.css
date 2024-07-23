@@ -1,28 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 /* @import works in one file for css */
 
-#userdetails_content{
+/* #userdetails_content{
     display:none;
-}
+} */
 
-#purchases_content{
+/* #purchases_content{
     display:none;
-}
+} */
 
-#editdet_content{
+/* #editdet_content{
     display:none;
-}
+} */
 
-#notifs_content{
+/* #notifs_content{
     display:none;
-}
-
+} */
+/* 
 #address_content{
     display:block;
-}
+} */
 
 .profilepicture{
     border-radius: 50%;
+    width: 182px;
+    height: 182px;
 }
 
 .profile_section:hover .profilepicture{

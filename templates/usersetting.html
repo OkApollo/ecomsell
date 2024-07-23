@@ -9,16 +9,13 @@
     <br>
     <div class="row">
         <div class="col-md-3">
+            <button type="button" class="btn btn-lg btn-light" id="editdet"><a href="{{url_for('userprofile')}}">Edit Details</a></button> <br />
 
-            <button type="button" class="btn btn-lg btn-light" id="userdetails">User Details</button> <br />
-
-            <button class="btn btn-lg btn-light" type="button" id="purchases">Purchased</button> <br />
-
-            <button type="button" class="btn btn-lg btn-light"><a href="{{url_for('userprofile')}}" id="editdet">Edit Details</a></button> <br />
+            <button class="btn btn-lg btn-light" type="button" id="purchases"><a href="{{url_for('purchases')}}">Purchased</a></button> <br />
 
             <button class="btn btn-lg btn-light" type="button" id="addresses"><a href = "{{ url_for('addressprofile' )}}">Addresses saved</a></button> <br />
 
-            <button type="button" class="btn btn-lg btn-light" id="notifs">Notification settings</button> <br />
+            <button type="button" class="btn btn-lg btn-light" id="notifs"><a href="{{ url_for('notifications') }}">Notification settings</a></button> <br />
             <a href="{{url_for('logout')}}" style="text-decoration: none;">
                 <button type="button" class="btn btn-lg btn-light">Signout</button>
             </a>
@@ -32,13 +29,12 @@
             {% block addresses %}
             {% endblock %}
             
-            <div id="purchases_content">
-                <h1>You've purchased nothing at the moment</h1>
-            </div>
+            {% block purchases %}
+            {% endblock %}
            
-            <div id="notifs_content">
-                <h1>notifs huh?</h1>
-            </div>
+            {% block notification %}
+            {% endblock%}
+            
         </div>
     </div>
 
