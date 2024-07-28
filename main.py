@@ -59,10 +59,7 @@ def login():
     if request.method == "POST":
         if not form.validate_on_submit():
             user = User.find_by_email(form.email.data)
-            try:
-                passchecker = User.check_password(user, password=form.password.data)
-            except AttributeError:
-                raise AttributeError
+            passchecker = User.check_password(user, password=form.password.data)
             if user and passchecker:
                 login_user(user)
                 session['email'] = form.email.data
@@ -80,7 +77,7 @@ def sp():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = Registration()
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and not form.validate_on_submit():
         if 'profile_picture' in request.files:
             file = request.files['profile_picture']
             filename = secure_filename(file.filename)
@@ -124,7 +121,7 @@ def editpfp():
 @login_required
 def address_add():
     form12 = AddressAdder()
-    if request.method == "POST" and form12.validate_on_submit():
+    if request.method == "POST" and not form12.validate_on_submit():
         address.create_address(current_user._id, form12.country.data, form12.state.data, form12.zipcode.data, form12.note.data)
         flash("Address added successfully", "success")
         return redirect(url_for("addressprofile"))
@@ -135,7 +132,7 @@ def address_add():
 def address_edit(unique_address_id):
     addresses = address.get_from_id(unique_address_id)
     form12 = AddressAdder(obj=addresses)
-    if form12.validate_on_submit():
+    if not form12.validate_on_submit():
         addresses.country = form12.country.data
         addresses.city = form12.state.data
         addresses.zipcode = form12.zipcode.data
@@ -175,9 +172,6 @@ def cart():
     return render_template("cart.html", user=current_user)
 
 
-
-
-
 @app.route("/userprofile", methods=["POST", "GET"])
 @login_required
 def userprofile():
@@ -199,14 +193,34 @@ def userprofile():
 
 # ADMIN SECTION
 
-@app.route("/addproduct/<PID>", methods=["GET","POST"])
-@login_required
-@admin_required
-def addproduct(PID):
-    print(PID)
-    return redirect("admin")
+@app.route("/admin/addproduct", methods=["GET","POST"])
+def addproduct():
+    form = ProductAdder()
+    if request.method == "POST":
+        pictureid = token_hex()
+        product.add_to_db(variant=token_hex(), productname=form.productname.data,  pictureid = pictureid, price=form.price.data)
+        if 'productpicture' in request.files:
+            print("True")
+            file = request.files['productpicture']
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], f'{pictureid}.png'))
+        return redirect(url_for("addproduct"))
+    return render_template("addproduct.html", form=form)
+
+@app.route("/admin/productlist", methods=["GET", "POST"])
+def productlist():
+    allprod = product.get_all_products()
+    return render_template("productlist.html", allprod = allprod)
     
-    
+@app.route("/admin/delete/<unique_id>")
+def delprod(unique_id):
+    product.delete_from_db(unique_id)
+    return redirect(url_for('productlist', deleted = 'true'))
+
+@app.route("/admin/edit/<unique_id>")
+def editprod(unique_id):
+    productinfo = product()
+    form = ProductAdder()
+    pass
 
 @app.route("/admin", methods=["GET","POST"])
 @login_required

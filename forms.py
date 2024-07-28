@@ -30,6 +30,7 @@ class AddressAdder(FlaskForm):
     submit = SubmitField("Submit")
 
 class ProductAdder(FlaskForm):
+    productpicture = FileField('Product Picture', validators=[DataRequired()]) 
     productname = StringField("Product Name", validators=[DataRequired()])
     price = IntegerField("Price", validators=[DataRequired()])
     submit = SubmitField("Submit")

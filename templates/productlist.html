@@ -1,0 +1,59 @@
+{% extends 'admin.html'%}
+
+{% block title %} Ecomsell | Product List {% endblock %}
+
+{% block content %}
+<table id="productList" class="display">
+    <thead>
+        <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>View</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for productdata in allprod %}
+        <tr>
+            <td><img src="{{ url_for('addpfp', filename=productdata.pictureid + '.png') }}" alt="product img" width="100px" height="100px"></td>
+            <td>{{ productdata.productname }}</td>
+            <td>{{ productdata.price }}</td>
+            <td><button type="button" class="btn btn-primary">View</button></td>
+            <td><button type="button" class="btn btn-success">Edit</button></td>
+            <td><button type="button" class="btn btn-danger" onclick="confirmDelete(event, '{{productdata._id}}')">Delete</button></td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#productList').DataTable();
+    });
+
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('deleted') && urlParams.get('deleted') == 'true') {
+        alert("Product deleted successfully!!!");
+    }
+
+
+    function confirmDelete(event, id){
+        var result = confirm("Do you want to delete the product?")
+        if (result) {
+            window.location.href = "/admin/delete/" + id;
+        }
+        else{
+            event.preventDefault();
+        }
+    }
+
+
+
+</script>
+{% endblock %}
